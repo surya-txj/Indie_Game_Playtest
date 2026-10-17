@@ -21,6 +21,20 @@ export async function getWorkspace(user) {
   const users = await User.find({ _id: { $in: userIds } }).select('name email role').lean();
   const userById = new Map(users.map((u) => [String(u._id), u]));
 
+  // Testers who joined any session in these studios: candidates for embargo allow-lists.
+  const invitations = await Invitation.find({ studioId: { $in: studioIds }, acceptedBy: { $ne: null } })
+    .select('studioId acceptedBy')
+    .lean();
+  const testerDocs = await User.find({ _id: { $in: invitations.map((i) => i.acceptedBy) } }).select('name email').lean();
+  const testerById = new Map(testerDocs.map((t) => [String(t._id), t]));
+  const testersByStudio = new Map();
+  for (const inv of invitations) {
+    const key = String(inv.studioId);
+    if (!testersByStudio.has(key)) testersByStudio.set(key, new Map());
+    const t = testerById.get(String(inv.acceptedBy));
+    if (t) testersByStudio.get(key).set(String(t._id), t);
+  }
+
   return {
     studios: studios.map((s) => ({
       _id: s._id,
@@ -31,6 +45,7 @@ export async function getWorkspace(user) {
         const u = userById.get(String(m.userId));
         return { userId: m.userId, role: m.role, name: u?.name, email: u?.email };
       }),
+      testers: [...(testersByStudio.get(String(s._id))?.values() ?? [])],
     })),
     games,
     builds,
@@ -54,7 +69,7 @@ async function testerWorkspace(user) {
   const studios = await Studio.find({ _id: { $in: games.map((g) => g.studioId) } }).select('name').lean();
 
   return {
-    studios: studios.map((s) => ({ _id: s._id, name: s.name, myRole: 'tester', members: [] })),
+    studios: studios.map((s) => ({ _id: s._id, name: s.name, myRole: 'tester', members: [], testers: [] })),
     games,
     builds: visibleBuilds.map(({ allowedViewers, ...b }) => b),
     sessions: visibleSessions,
