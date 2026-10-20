@@ -1,4 +1,4 @@
-# Indie Game Playtest Intelligence
+# Indie Game Playtest Intelligence - FullStack Project
 
 A feedback workspace for indie game studios running closed playtests. Testers report bugs, confusing moments and frustrations against a specific build. Developers triage the reports, link duplicates to issues and track fixes. Local AI groups reports that describe the same problem in different words.
 
