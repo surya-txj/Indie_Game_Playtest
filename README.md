@@ -4,7 +4,7 @@ A feedback workspace for indie game studios running closed playtests. Testers re
 
 > **Two rules hold everywhere in the system**
 > 1. **No build execution.** Only screenshots (PNG, JPEG, WebP) can be uploaded. No endpoint runs, unpacks or inspects a game build.
-> 2. **Popularity is not truth.** A cluster of 20 similar reports is shown as *"20 similar reports, unverified"*. A bug is confirmed only when a developer moves its issue to `confirmed`. AI suggests; humans decide.
+> 2. **Popularity is not truth.** A cluster of 20 similar reports is shown as *"20 similar reports, unverified"*. A bug is confirmed only if a developer moves its issue to `confirmed`. AI suggests; humans decide.
 
 ---
 
@@ -62,7 +62,7 @@ A feedback workspace for indie game studios running closed playtests. Testers re
 | Uploads | multer with MIME and magic-byte checks |
 | Testing | Vitest, Supertest |
 
-No paid API keys are needed. All AI runs locally through Ollama.
+No paid API keys were needed. All AI runs locally through Ollama.
 
 ---
 
